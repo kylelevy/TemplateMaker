@@ -71,20 +71,21 @@ def AppendQuestion(Q, answer, doc):
 # I have chosen to loop these questions so that I get 5 unique problems of
 # each type.
 
-# Creating the question list using the questionBank library
+if __name__ == '__main__':
+    # Creating the question list using the questionBank library
 
-for i in range(5):
-    Q1 = Add('What is x + y?',random.randint(0,100),random.randint(0,100))
-    questionList.append(Q1)
+    for i in range(5):
+        Q1 = Add('What is x + y?',random.randint(0,100),random.randint(0,100))
+        questionList.append(Q1)
 
-for i in range(5):
-    Q2 = Multiply('What x * y?', random.randint(0,12), random.randint(0,12))
-    questionList.append(Q2)
+    for i in range(5):
+        Q2 = Multiply('What x * y?', random.randint(0,12), random.randint(0,12))
+        questionList.append(Q2)
 
 
-#Format fixing for Answer Key
-if (counter-1)%3 != 0:
-    AnswerKey = AnswerKey[:-7]
+    #Format fixing for Answer Key
+    if (counter-1)%3 != 0:
+        AnswerKey = AnswerKey[:-7]
 
-# Compile document
-page_compile()
+    # Compile document
+    page_compile()
