@@ -1,8 +1,13 @@
-# TemplateMaker
-A software designed to automatically generate random value word problems based on user input. (It exports as a pdf work sheet with an answer key)
+# Template Maker
+_V.2._
 
-This code depends on fpdf. This code will create a pdf with random value word problems. It will append an answer key to the end of the document. The questions can be customized by modifying the Question Bank file. This can be done using the Question Maker script.
+I redid the original template maker with some big changes. I have restructured the code to work on an object oriented basis to make storing questions, answers and solutions way easier. Furthermore, I switched the document dependancy from fpdf to pyLaTeX. Mostly due to preference and simplicity. This would also allow for easy integration with LaTeX handle on formulas, graphs, tables, and equations. Hope this can be useful to someone who is making worksheets or practice problems for their students.
 
-The question bank contains the question functions with the question and answer as an array.
+## How to Customize Questions and Solutions
+Questions are just objects. In order to create your own, go into the `questionBank.py` and create a new subclass and set the question to yours as a string, and the answer will be given in the `solve()` function as a return equation. Then, go to the `main.py` and add the questions to the questionLink at the bottom under the horizontal line.
 
-The question maker is a script which creates the question functions using the user input and regular expressions to extract the variable names and replace them with random values when they are implemented into the document. Once extracted, the user can prove the solution formula in terms of the variables they gave so that the answer key can be populated.
+## Dependencies
+* pylatex
+* random
+
+Copyright © 2023 by Kyle Levy

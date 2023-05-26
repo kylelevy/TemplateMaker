@@ -2,20 +2,20 @@
 import random
 import math
 
-#Question 1 as a function
-def Q1():
-    x = random.randint(0,10)
-    y = random.randint(0,10)
-    question = str("What is the product of "+str(x)+" and "+str(y)+"?")
-    answer = str(x*y)
+# Define a Question class
+class Question:
+    def __init__(self, question, var1, var2):
+        self.question = question
+        self.var1 = var1
+        self.var2 = var2
 
-    return [question,answer]
+        self.question = question.replace('x', str(self.var1))
+        self.question = self.question.replace('y', str(self.var2))
 
-#Question 2
-def Q2():
-    x = random.randint(0,10)
-    y = random.randint(0,10)
-    question = str("What is the sum of "+str(x)+" and "+str(y)+"?")
-    answer = str(x+y)
-
-    return [question,answer]
+class Add(Question):
+    def solve(self):
+        return self.var1 + self.var2
+        
+class Multiply(Question):
+     def solve(self):
+          return self.var1 * self.var2

@@ -1,82 +1,90 @@
 # ******************************************************************************
 #
-#                                Template Maker
+#                             Template Maker V.2.
 #                            Created by Kyle Levy
 #
-#
+# Copyright © 2023 by Kyle Levy
 # ******************************************************************************
 
-from fpdf import FPDF
+import numpy as np
+from pylatex import Document, Section, Subsection, Math, NoEscape
 from questionBank import *
 
-pdf = FPDF('P', 'mm', 'Letter')
 
-pdf.add_page()
-
-pdf.set_font('times', '', 11)
-
-pdf.set_auto_page_break(auto=True, margin = 40)
-
-pdf.set_font('times', 'U', 18)
-pdf.multi_cell(200, 20, 'Document Title',0,'C',ln=True)
 global counter
 global AnswerKey
 global rows
+global doc
+global questionList
 counter=1
 AnswerKey = ''
-
-#Customization Section
+questionList = []
 rows = 3
 
-# Append Question to PDF
-def AppendQuestion(function, times):
+def page_compile():
+    # Creates the document
+    doc = Document()
+
+    # Creates a question section and appends all the questions on the questionList
+    with doc.create(Section('Questions')):
+        for question in questionList:
+            AppendQuestion(question, question.solve(), doc)
+    
+    # Inserts a new page to avoid crowding
+    doc.append(NoEscape(
+    r'''
+    \newpage
+    '''))
+
+    # Creates an answers section and appends the answer key
+    with doc.create(Section('Answers')):
+        doc.append(AnswerKey)
+
+    # Compile LaTeX into PDF
+    doc.generate_pdf('Worksheet', clean_tex=False)
+
+    
+
+
+# Append Question to document
+def AppendQuestion(Q, answer, doc):
     global counter
-    global rows
     global AnswerKey
-    for x in range(times):
-        # Print Question
-        temp = function()
-        pdf.set_font('times','', 11)
-        pdf.multi_cell(200,10,"Q"+str(counter)+")  "+str(temp[0]),ln=True)
+    # Print Question
+    doc.append("Q"+str(counter)+")  "+str(Q.question))
+    doc.append('\n\n\n\n\n\n\n')
 
-        if counter < 3:
-            pdf.cell(200,80,'',0,2)
-        else:
-            pdf.cell(200,55,'',0,2)
+    # Append to Answer Key
+    AnswerKey += "Q"+str(counter)+" Answer: "+str(answer)
 
-        # Append to Answer Key
-        AnswerKey += "Q"+str(counter)+" Answer: "+str(temp[1])
+    if counter%rows == 0:
+        AnswerKey += "\n"
+    else:
+        AnswerKey += "   |   "
 
-        if counter%rows == 0:
-            AnswerKey += "\n"
-        else:
-            AnswerKey += "   |   "
-
-        counter = counter+1
+    counter = counter+1
 
 
 # ------------------------------------------------------------------------------
 
-# Pick the questions you want and how many you would like
-# from the question bank
+# Pick the questions and how the answers are found in the question bank
+# I have chosen to loop these questions so that I get 5 unique problems of
+# each type.
 
-AppendQuestion(Q1,5)
-AppendQuestion(Q2,5)
+# Creating the question list using the questionBank library
 
+for i in range(5):
+    Q1 = Add('What is x + y?',random.randint(0,100),random.randint(0,100))
+    questionList.append(Q1)
+
+for i in range(5):
+    Q2 = Multiply('What x * y?', random.randint(0,12), random.randint(0,12))
+    questionList.append(Q2)
 
 
 #Format fixing for Answer Key
 if (counter-1)%3 != 0:
     AnswerKey = AnswerKey[:-7]
 
-# Answer Key
-pdf.add_page()
-pdf.set_font('times', '', 24)
-pdf.cell(40,20,'Answer Key', ln=True)
-pdf.set_font('times','',14)
-pdf.multi_cell(200,15, AnswerKey,0,'C')
-
-print(AnswerKey)
-
-#Exprot
-pdf.output('Worksheet.pdf')
+# Compile document
+page_compile()
